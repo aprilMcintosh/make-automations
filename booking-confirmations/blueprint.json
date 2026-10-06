@@ -1,0 +1,138 @@
+{
+  "name": "Booking confirmation email",
+  "flow": [
+    {
+      "id": 13,
+      "module": "google-sheets:filterRows",
+      "version": 2,
+      "parameters": {},
+      "mapper": {
+        "from": "drive",
+        "filter": [
+          [
+            {
+              "a": "A",
+              "o": "exist"
+            }
+          ]
+        ],
+        "sheetId": "Bookings",
+        "sortOrder": "asc",
+        "spreadsheetId": "YOUR_SPREADSHEET_ID",
+        "tableFirstRow": "A1:CZ1",
+        "includesHeaders": true,
+        "valueRenderOption": "FORMATTED_VALUE",
+        "dateTimeRenderOption": "FORMATTED_STRING"
+      },
+      "metadata": {
+        "designer": {
+          "x": -9,
+          "y": -72,
+          "name": "Read booking rows"
+        }
+      }
+    },
+    {
+      "id": 8,
+      "module": "google-email:ActionSendEmail",
+      "version": 2,
+      "parameters": {},
+      "filter": {
+        "name": "Not sent yet + this location",
+        "conditions": [
+          [
+            {
+              "a": "{{13.`22`}}",
+              "b": "Sent",
+              "o": "text:notcontain"
+            },
+            {
+              "a": "{{13.`9`}}",
+              "b": "YOUR CITY, ST",
+              "o": "text:equal"
+            }
+          ]
+        ]
+      },
+      "mapper": {
+        "cc": [],
+        "to": [
+          "{{13.`2`}}"
+        ],
+        "bcc": [],
+        "from": "Your Company",
+        "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Appointment Confirmation</title>\n</head>\n<body style=\"margin:0;padding:0;background-color:#f2f2f2;font-family:Helvetica,Arial,sans-serif;\">\n  <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"background-color:#f2f2f2;\">\n    <tr>\n      <td align=\"center\" style=\"padding:24px 12px;\">\n        <table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"max-width:600px;background-color:#ffffff;border:1px solid #dddddd;\">\n          <tr>\n            <td style=\"background-color:#1a2238;padding:20px 28px;color:#ffffff;font-size:18px;font-weight:bold;\">Your Company</td>\n          </tr>\n          <tr>\n            <td style=\"padding:28px;\">\n              <h1 style=\"margin:0 0 10px 0;font-size:24px;color:#1a2238;\">Hi {{13.`0`}}, you're booked.</h1>\n              <p style=\"margin:0 0 20px 0;font-size:15px;line-height:1.6;color:#333333;\">Here are the details for your appointment.</p>\n              <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"border:1px solid #dddddd;border-collapse:collapse;\">\n                <tr>\n                  <td width=\"110\" style=\"background-color:#f7f7f7;padding:12px 14px;font-size:12px;text-transform:uppercase;color:#666666;border-bottom:1px solid #dddddd;\">Where</td>\n                  <td style=\"padding:12px 16px;font-size:15px;color:#1a2238;border-bottom:1px solid #dddddd;\"><strong>VENUE NAME</strong><br>123 Main St, Your City, ST 00000</td>\n                </tr>\n                <tr>\n                  <td style=\"background-color:#f7f7f7;padding:12px 14px;font-size:12px;text-transform:uppercase;color:#666666;border-bottom:1px solid #dddddd;\">When</td>\n                  <td style=\"padding:12px 16px;font-size:15px;color:#1a2238;border-bottom:1px solid #dddddd;\"><strong>{{13.`10`}}</strong></td>\n                </tr>\n                <tr>\n                  <td style=\"background-color:#f7f7f7;padding:12px 14px;font-size:12px;text-transform:uppercase;color:#666666;\">Time</td>\n                  <td style=\"padding:12px 16px;font-size:15px;color:#1a2238;\"><strong>{{13.`11`}}</strong></td>\n                </tr>\n              </table>\n              <p style=\"margin:24px 0 0 0;padding:16px 18px;background-color:#1a2238;color:#ffffff;font-size:15px;line-height:1.5;border-radius:6px;\"><strong>Please reply to confirm.</strong><br>A quick \"yes\" is all we need. We'll call anyone we don't hear back from.</p>\n              <p style=\"margin:24px 0 0 0;font-size:14px;line-height:1.6;color:#333333;\">Need to reschedule? Call 555-555-0100 and we'll move you.</p>\n              <p style=\"margin:24px 0 0 0;font-size:14px;line-height:1.6;color:#333333;\">Thanks,<br>Your Name<br>Your Company</p>\n            </td>\n          </tr>\n        </table>\n      </td>\n    </tr>\n  </table>\n</body>\n</html>\n",
+        "subject": "Appointment Confirmation",
+        "attachments": []
+      },
+      "metadata": {
+        "designer": {
+          "x": 351,
+          "y": -70,
+          "name": "Send confirmation email"
+        }
+      },
+      "onerror": [
+        {
+          "id": 12,
+          "module": "builtin:Ignore",
+          "version": 1,
+          "parameters": {},
+          "mapper": {},
+          "metadata": {
+            "designer": {
+              "x": 645,
+              "y": -324,
+              "name": "Skip row on send error"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "module": "google-sheets:updateRow",
+      "version": 2,
+      "parameters": {},
+      "mapper": {
+        "from": "drive",
+        "mode": "select",
+        "values": {
+          "22": "Sent"
+        },
+        "sheetId": "Bookings",
+        "rowNumber": "{{13.`__ROW_NUMBER__`}}",
+        "spreadsheetId": "/YOUR_SPREADSHEET_ID",
+        "includesHeaders": true,
+        "useColumnHeaders": false,
+        "valueInputOption": "USER_ENTERED"
+      },
+      "metadata": {
+        "designer": {
+          "x": 716,
+          "y": -67,
+          "name": "Mark row as Sent"
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    },
+    "designer": {
+      "orphans": []
+    }
+  }
+}
