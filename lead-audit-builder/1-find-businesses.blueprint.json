@@ -1,0 +1,96 @@
+{
+  "name": "Lead audit 1 - find local businesses",
+  "flow": [
+    {
+      "id": 5,
+      "module": "util:SetVariable2",
+      "version": 1,
+      "parameters": {},
+      "mapper": {
+        "name": "Search Term",
+        "scope": "roundtrip",
+        "value": "plumbing"
+      },
+      "metadata": {
+        "designer": {
+          "x": -527,
+          "y": 23,
+          "name": "Search Term"
+        }
+      }
+    },
+    {
+      "id": 10,
+      "module": "util:SetVariable2",
+      "version": 1,
+      "parameters": {},
+      "mapper": {
+        "name": "Search Location",
+        "scope": "roundtrip",
+        "value": "Austin, TX"
+      },
+      "metadata": {
+        "designer": {
+          "x": -212,
+          "y": 31,
+          "name": "Search Location"
+        }
+      }
+    },
+    {
+      "id": 11,
+      "module": "util:SetVariable2",
+      "version": 1,
+      "parameters": {},
+      "mapper": {
+        "name": "How Many We Want",
+        "scope": "roundtrip",
+        "value": "5"
+      },
+      "metadata": {
+        "designer": {
+          "x": 94,
+          "y": 33,
+          "name": "How Many"
+        }
+      }
+    },
+    {
+      "id": 8,
+      "module": "apify:runActor",
+      "version": 1,
+      "parameters": {},
+      "mapper": {
+        "actorId": "WnMxbsRLNbPeYL6ge",
+        "runSync": false,
+        "inputBody": "{\n  \"language\": \"en\",\n  \"locationQuery\": \"{{10.`Search Location`}}\",\n  \"maxCrawledPlacesPerSearch\": {{11.`How Many We Want`}},\n  \"searchStringsArray\": [\n    \"{{5.`Search Term`}}\"\n  ],\n  \"skipClosedPlaces\": false,\n  \"searchMatching\": \"all\",\n  \"placeMinimumStars\": \"\",\n  \"website\": \"allPlaces\"\n}"
+      },
+      "metadata": {
+        "designer": {
+          "x": 393,
+          "y": 38,
+          "name": "Run Google Maps scraper (Apify)"
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    },
+    "designer": {
+      "orphans": []
+    }
+  }
+}

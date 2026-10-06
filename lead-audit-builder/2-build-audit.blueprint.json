@@ -1,0 +1,257 @@
+{
+  "name": "Lead audit 2 - build the audit deck",
+  "flow": [
+    {
+      "id": 1,
+      "module": "apify:finishedActorRuns",
+      "version": 1,
+      "parameters": {},
+      "mapper": {},
+      "metadata": {
+        "designer": {
+          "x": 0,
+          "y": 0,
+          "name": "When the scraper finishes"
+        }
+      }
+    },
+    {
+      "id": 2,
+      "module": "apify:fetchDatasetItems",
+      "version": 1,
+      "parameters": {},
+      "mapper": {
+        "type": "clean",
+        "limit": "100",
+        "format": "json",
+        "datasetId": "{{1.defaultDatasetId}}"
+      },
+      "metadata": {
+        "designer": {
+          "x": 300,
+          "y": 0,
+          "name": "Get scraped businesses"
+        }
+      }
+    },
+    {
+      "id": 6,
+      "module": "openai-gpt-3:CreateCompletion",
+      "version": 1,
+      "parameters": {},
+      "filter": {
+        "name": "Email",
+        "conditions": [
+          [
+            {
+              "a": "{{2.emails}}",
+              "b": "@",
+              "o": "text:contain"
+            }
+          ]
+        ]
+      },
+      "mapper": {
+        "model": "chatgpt-4o-latest",
+        "top_p": "1",
+        "select": "chat",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Here's a website. Please make sure it only includes the domain and top tier domain code:\n{{2.website}}\n\nFor Example: \nInput: https://www.facebook.com/\nOutput: facebook.com\n#\nFor Example: \nInput: https://www.google.com/?client=safari\nOutput: google.com\n#\nFor Example: \nInput: https://www.apple.com/\nOutput: apple.com\n#\n\nOnly provide the output without the word output. \n"
+          }
+        ],
+        "max_tokens": "100",
+        "temperature": "1",
+        "n_completions": "1",
+        "response_format": "text"
+      },
+      "metadata": {
+        "designer": {
+          "x": 614,
+          "y": 2,
+          "name": "Clean website to bare domain"
+        }
+      }
+    },
+    {
+      "id": 3,
+      "module": "apify:runActor",
+      "version": 1,
+      "parameters": {},
+      "mapper": {
+        "actorId": "u8A2grsI91g0ufYs2",
+        "runSync": true,
+        "inputBody": "{    \"domains\": [        \"{{6.choices[].message.content}}\"    ]}"
+      },
+      "metadata": {
+        "designer": {
+          "x": 905,
+          "y": -1,
+          "name": "Run traffic scraper (Apify)"
+        }
+      }
+    },
+    {
+      "id": 5,
+      "module": "apify:fetchDatasetItems",
+      "version": 1,
+      "parameters": {},
+      "mapper": {
+        "type": "clean",
+        "limit": "100",
+        "format": "json",
+        "datasetId": "{{3.defaultDatasetId}}"
+      },
+      "metadata": {
+        "designer": {
+          "x": 1215,
+          "y": 11,
+          "name": "Get traffic data"
+        }
+      }
+    },
+    {
+      "id": 8,
+      "module": "google-slides:createPresentation",
+      "version": 1,
+      "parameters": {},
+      "mapper": {
+        "title": "{{2.title}} Marketing Audit",
+        "select": "map",
+        "shared": false,
+        "folderId": null,
+        "requests": [
+          {
+            "text": "company_name",
+            "replaceText": "{{2.title}}"
+          },
+          {
+            "text": "kw_1_traffic",
+            "replaceText": "{{5.searchesSource.topKeywords[1].volume}}"
+          },
+          {
+            "text": "kw_2_traffic",
+            "replaceText": "{{5.searchesSource.topKeywords[2].volume}}"
+          },
+          {
+            "text": "kw_3_traffic",
+            "replaceText": "{{5.searchesSource.topKeywords[3].volume}}"
+          },
+          {
+            "text": "kw_4_traffic",
+            "replaceText": "{{5.searchesSource.topKeywords[4].volume}}"
+          },
+          {
+            "text": "global_rank",
+            "replaceText": "{{5.overview.globalRank}}"
+          },
+          {
+            "text": "country_rank",
+            "replaceText": "{{5.overview.countryRank}}"
+          },
+          {
+            "text": "bounce_rate",
+            "replaceText": "{{5.overview.bounceRate}}"
+          },
+          {
+            "text": "pages_per_visit",
+            "replaceText": "{{5.overview.pagesPerVisit}}"
+          },
+          {
+            "text": "avg_duration",
+            "replaceText": "{{5.overview.visitsAvgDurationFormatted}}"
+          },
+          {
+            "text": "visitor_count",
+            "replaceText": "{{5.overview.visitsTotalCount}}"
+          },
+          {
+            "text": "top_keywords_1",
+            "replaceText": "{{5.searchesSource.topKeywords[1].name}}"
+          },
+          {
+            "text": "top_keywords_2",
+            "replaceText": "{{5.searchesSource.topKeywords[2].name}}"
+          },
+          {
+            "text": "top_keywords_3",
+            "replaceText": "{{5.searchesSource.topKeywords[3].name}}"
+          },
+          {
+            "text": "top_keywords_4",
+            "replaceText": "{{5.searchesSource.topKeywords[4].name}}"
+          },
+          {
+            "text": "traffic_source_1",
+            "replaceText": "{{5.trafficSources.directVisitsShare}}"
+          },
+          {
+            "text": "traffic_source_2",
+            "replaceText": "{{5.trafficSources.referralVisitsShare}}"
+          },
+          {
+            "text": "traffic_source_3",
+            "replaceText": "{{5.trafficSources.paidSearchVisitsShare}}"
+          },
+          {
+            "text": "traffic_source_4",
+            "replaceText": "{{5.trafficSources.socialNetworksVisitsShare}}"
+          },
+          {
+            "text": "traffic_source_5",
+            "replaceText": "{{5.trafficSources.organicSearchVisitsShare}}"
+          }
+        ],
+        "destination": "drive",
+        "presentation": "/YOUR_SLIDES_TEMPLATE_ID"
+      },
+      "metadata": {
+        "designer": {
+          "x": 1506,
+          "y": 5,
+          "name": "Fill the audit slide deck"
+        }
+      },
+      "onerror": [
+        {
+          "id": 9,
+          "module": "builtin:Ignore",
+          "version": 1,
+          "parameters": {},
+          "filter": {
+            "name": "Catch all",
+            "conditions": []
+          },
+          "mapper": {},
+          "metadata": {
+            "designer": {
+              "x": 1806,
+              "y": 5,
+              "name": "Skip business on error"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "instant": true,
+    "version": 1,
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    },
+    "designer": {
+      "orphans": []
+    }
+  }
+}
