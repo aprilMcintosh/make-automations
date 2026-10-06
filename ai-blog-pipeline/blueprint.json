@@ -1,0 +1,311 @@
+{
+  "name": "AI blog pipeline",
+  "flow": [
+    {
+      "id": 1,
+      "module": "openai-gpt-3:CreateCompletion",
+      "version": 1,
+      "parameters": {},
+      "mapper": {
+        "model": "chatgpt-4o-latest",
+        "top_p": "1",
+        "select": "chat",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are an expert blog writer. You are intelligent and you only write true and accurate information."
+          },
+          {
+            "role": "assistant",
+            "content": "Give me the most popular and most clicked blog subjects posted today {{now}} that I could write a blog about. Give me keywords as well. Make sure they are from high ranking websites. Only give me one topic and some seed keywords that will help with my SEO content writing. Make sure to pick a topic that a small blog could rank for, and that is not too competitive. Also make sure it falls within this category: tech.\n\nDon't write about sustainable living, work from home tips, finance apps or smart home devices or smart workout devices. \n\nTopics you might see on the techcrunch blog or brit and co blog.\n\nDon't pick anything that is \"the Rise\" of anything.\n\nDon't write about AI\n\nMake sure to pick identified trends that will resonate best with your audience\n\nexamples:\nAlso for titles instead of saying things like: The Rise of Retro Gaming: How Classic Consoles are Making a Comeback.\nSay it like this instead: Nostalgia Hit: Why Everyone’s Dusting Off Their Old Consoles.\n\nThese are just examples, don't use these\n\nGive me blog ideas I haven’t written about yet. Make sure to look through this website's titles and pick something I've never written about.  Here is my website for you to check: https://YOUR-BLOG.example/. Keep it unique, creative, and not too boring. I want ideas that feel like me: casual, and a little fun. Don't write about ANY subject that is already written about on the above website. \n\nMake sure you are going through the website I gave you and don't pick any subject that has already been written about. \n\nDon't write about digital declutter."
+          }
+        ],
+        "max_tokens": "4097",
+        "temperature": "0.7",
+        "n_completions": "1",
+        "response_format": "text",
+        "presence_penalty": "0.6",
+        "frequency_penalty": "0.7"
+      },
+      "metadata": {
+        "designer": {
+          "x": 0,
+          "y": 0,
+          "name": "Get Content Idea"
+        }
+      }
+    },
+    {
+      "id": 2,
+      "module": "openai-gpt-3:CreateCompletion",
+      "version": 1,
+      "parameters": {},
+      "mapper": {
+        "model": "chatgpt-4o-latest",
+        "top_p": "1",
+        "select": "chat",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are an expert blog writer. You are intelligent and you only write true and accurate information. You're very edgy and write not just to inform people but to entertain them."
+          },
+          {
+            "role": "assistant",
+            "content": "Write a good article based on this {{1.result}}. Make sure to use the seed keywords. Make it sound as human and natural as possible. It needs to have a good word count and good SEO so that it can rank on number 1 page of google. Also provide at least one outside source with a link for the article. Write the article in markdown (atx) format. Write me the article like you would if you worked for techcrunch.com. Also just give me the article and nothing else."
+          }
+        ],
+        "max_tokens": "4097",
+        "temperature": "0.7",
+        "n_completions": "1",
+        "response_format": "text",
+        "presence_penalty": "0.6",
+        "frequency_penalty": "0.7"
+      },
+      "metadata": {
+        "designer": {
+          "x": 317,
+          "y": -2,
+          "name": "Write Blog"
+        }
+      }
+    },
+    {
+      "id": 4,
+      "module": "openai-gpt-3:CreateCompletion",
+      "version": 1,
+      "parameters": {},
+      "mapper": {
+        "model": "chatgpt-4o-latest",
+        "top_p": "1",
+        "select": "chat",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are an expert blog writer. You are intelligent and you only write true and accurate information."
+          },
+          {
+            "role": "assistant",
+            "content": "Read through this {{2.result}} and find hard-to-read sentences, and rewrite for clarity. Please provide just the article. Write the article in markdown (atx) format. Make sure it still has good keywords and good SEO to get found on page one of google and bing.\n\nAlso make it sound more human. \n\n• Avoid: “Unlock the full potential of your writing with these tips.”\n• Use instead: “These tips can improve your writing.”\n\n• Avoid: “Let’s dive into this revolutionary method.\n• Use instead: “Here’s how the method works.”\n\n• Avoid: “This groundbreaking tool will change your writing forever.”\n•Use instead: “This tool helps you write better.”\n\n•Avoid: “Experience the magic of effortless content creation.”\n•Use instead: “This method simplifies content creation.”\n\n• Example 1: “I think this might work, but let’s test it first.”\n•Example 2: “Honestly, I’m unsure about this approach.”\n\n• Example 1: Instead of “This tool is useful,” say: “This tool saves you 30 minutes per draft by refining your tone and grammar instantly.”\n\n• Example 2: Instead of “Write naturally,” say: “Write as if explaining to a friend over coffee—casual, clear, and focused.”\n\n**•**\t**Example 1: “When I started writing, I spent hours editing every sentence. Then I learned to focus on clarity first—game changer!”**`\n\n`**•**\t**Example 2: “A client once told me their blog wasn’t converting. We rewrote the intro to address the reader’s problem. Conversions tripled.”\n\n• Example 1: “Here’s how to simplify your content:\n❶ • Use short paragraphs.\n❷ • Write clear headlines.\n❸ • Get to the point fast.”\n\n• Example 2: “In just three steps, you can:\n❶. Edit faster.\n❷. Write clearer.\n❸. Engage better.”\n\nWrite content tailored to the reader’s needs, using real-world examples and micro-stories to add relatability. Simplify your language but deliver depth in every sentence. Use engagement techniques like rhetorical questions, analogies, and vivid imagery. Ensure clarity by breaking content into digestible sections. Include a feedback loop to check for relevance, readability, and impact. Make your writing feel like a conversation, human, clear, and actionable."
+          }
+        ],
+        "max_tokens": "4097",
+        "temperature": "0.7",
+        "n_completions": "1",
+        "response_format": "text",
+        "presence_penalty": "0.6",
+        "frequency_penalty": "0.7"
+      },
+      "metadata": {
+        "designer": {
+          "x": 626,
+          "y": -5,
+          "name": "Rewrite Blog"
+        }
+      }
+    },
+    {
+      "id": 9,
+      "module": "openai-gpt-3:CreateCompletion",
+      "version": 1,
+      "parameters": {},
+      "mapper": {
+        "model": "chatgpt-4o-latest",
+        "top_p": "1",
+        "select": "chat",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are an expert blog writer. You are intelligent and you only write true and accurate information."
+          },
+          {
+            "role": "assistant",
+            "content": "Write me a good SEO title for this blog post. {{4.result}}. Only provide me with a title and nothing else and don't put quotes around it.  Make sure it is good SEO and not too long."
+          }
+        ],
+        "max_tokens": "4097",
+        "temperature": "0.7",
+        "n_completions": "1",
+        "response_format": "text",
+        "presence_penalty": "0.6",
+        "frequency_penalty": "0.7"
+      },
+      "metadata": {
+        "designer": {
+          "x": 933,
+          "y": 0,
+          "name": "Title"
+        }
+      }
+    },
+    {
+      "id": 11,
+      "module": "openai-gpt-3:CreateCompletion",
+      "version": 1,
+      "parameters": {},
+      "mapper": {
+        "model": "chatgpt-4o-latest",
+        "top_p": "1",
+        "select": "chat",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are an expert blog writer. You are intelligent and you only write true and accurate information."
+          },
+          {
+            "role": "assistant",
+            "content": "Write me a good excerpt for this blog post. {{4.result}}. Write this in plain text. It needs to be short with good SEO. Like a meta description. Short and to the point. \nKeep it unique, creative, and not too boring. I want ideas that feel like me: casual, and a little fun."
+          }
+        ],
+        "max_tokens": "4097",
+        "temperature": "0.7",
+        "n_completions": "1",
+        "response_format": "text",
+        "presence_penalty": "0.6",
+        "frequency_penalty": "0.7"
+      },
+      "metadata": {
+        "designer": {
+          "x": 1237,
+          "y": 1,
+          "name": "Excerpt"
+        }
+      }
+    },
+    {
+      "id": 19,
+      "module": "gemini-ai:createAnImage",
+      "version": 1,
+      "parameters": {},
+      "mapper": {
+        "model": "imagen-3.0-generate-002",
+        "prompt": "Create an image for this blog post {{4.result}}. Make sure that it is eye catching and clickable. Also make sure there is no text on the image. Add a random number to the file name so each image has a unique name.",
+        "aspectRatio": "1:1",
+        "personGeneration": "ALLOW_ADULT"
+      },
+      "metadata": {
+        "designer": {
+          "x": 1537,
+          "y": 1,
+          "name": "Generate featured image"
+        }
+      }
+    },
+    {
+      "id": 18,
+      "module": "util:SetVariable2",
+      "version": 1,
+      "parameters": {},
+      "mapper": {
+        "name": "uniquefilename",
+        "scope": "roundtrip",
+        "value": "image-{{now}}.png"
+      },
+      "metadata": {
+        "designer": {
+          "x": 1827,
+          "y": 5,
+          "name": "Unique file name"
+        }
+      }
+    },
+    {
+      "id": 17,
+      "module": "wordpress:createMediaItem",
+      "version": 3,
+      "parameters": {},
+      "mapper": {
+        "data": "{{19.data}}",
+        "fileName": "{{18.uniquefilename}}"
+      },
+      "metadata": {
+        "designer": {
+          "x": 2145,
+          "y": 10,
+          "name": "Upload image to WordPress"
+        }
+      }
+    },
+    {
+      "id": 5,
+      "module": "markdown:Compile",
+      "version": 2,
+      "parameters": {},
+      "mapper": {
+        "gfm": true,
+        "data": "{{4.result}}",
+        "sanitize": false
+      },
+      "metadata": {
+        "designer": {
+          "x": 2433,
+          "y": 11,
+          "name": "Markdown to HTML"
+        }
+      }
+    },
+    {
+      "id": 6,
+      "module": "google-docs:createADocument",
+      "version": 1,
+      "parameters": {},
+      "mapper": {
+        "name": "{{4.result}}",
+        "footer": false,
+        "header": false,
+        "content": "{{5.data}}",
+        "folderId": "/",
+        "destination": "drive"
+      },
+      "metadata": {
+        "designer": {
+          "x": 2723,
+          "y": 23,
+          "name": "Save copy to Google Docs"
+        }
+      }
+    },
+    {
+      "id": 7,
+      "module": "wordpress:createPost",
+      "version": 3,
+      "parameters": {},
+      "mapper": {
+        "date": "{{now}}",
+        "type": "posts",
+        "title": "{{9.result}}",
+        "author": 1,
+        "status": "publish",
+        "content": "{{5.data}}",
+        "excerpt": "{{11.result}}",
+        "categories": [],
+        "featuredMedia": "{{17.ID}}"
+      },
+      "metadata": {
+        "designer": {
+          "x": 3011,
+          "y": 27,
+          "name": "Publish post"
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    },
+    "designer": {
+      "orphans": []
+    }
+  }
+}
